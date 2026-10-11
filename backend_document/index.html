@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student AI Dashboard | Next-Gen Assistant</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darker: '#090a0f',
+                        cardbg: '#12131a',
+                        cardborder: '#1e202c',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & Lucide Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom scrollbar matching sleek dark SaaS UI */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+        /* Glowing background ambient gradient meshes */
+        .ambient-glow-1 {
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(168, 85, 247, 0.04) 50%, transparent 70%);
+        }
+        .ambient-glow-2 {
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, rgba(99, 102, 241, 0.04) 50%, transparent 70%);
+        }
+    </style>
+</head>
+<body class="bg-[#07080c] text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- Ambient Glow Background Blobs -->
+    <div class="fixed top-[-200px] left-[-200px] w-[600px] h-[600px] ambient-glow-1 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-[-200px] right-[-200px] w-[600px] h-[600px] ambient-glow-2 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="h-16 bg-[#0c0d14]/70 backdrop-blur-xl border-b border-white/[0.06] px-6 lg:px-10 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <i data-lucide="bot" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="font-bold text-lg tracking-tight">Student<span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">AI</span></span>
+        </div>
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+            <a href="#top" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Workspace</a>
+            <a href="#about" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="info" class="w-4 h-4"></i> About</a>
+            <a href="#contact" class="hover:text-white transition-colors flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4"></i> Contact</a>
+        </nav>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span> System Online
+            </span>
+        </div>
+    </header>
+
+    <!-- Main Application Split Workspace -->
+    <div class="flex-1 flex max-w-[1700px] w-full mx-auto">
+        
+        <!-- Sidebar Navigation / Quick Prompts -->
+        <aside class="w-80 bg-[#0a0b10]/60 backdrop-blur-md border-r border-white/[0.06] p-5 flex flex-col shrink-0">
+            <button onclick="newChat()" class="w-full group relative inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium text-sm shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 mb-6">
+                <i data-lucide="plus" class="w-4 h-4 transition-transform group-hover:rotate-90"></i>
+                <span>New Conversation</span>
+            </button>
+
+            <div class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3 px-2 flex items-center justify-between">
+                <span>Quick Prompts</span>
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-400"></i>
+            </div>
+
+            <div class="space-y-1.5 flex-1 overflow-y-auto pr-1">
+                <button onclick="askQuestion('What is the minimum attendance required?')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-sm text-slate-300 hover:text-white bg-white/[0.01] hover:bg-white/[0.04] border border-transparent hover:border-white/[0.06] transition-all flex items-center gap-3 group">
+                    <span class="p-1.5 rounded-md bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500/20 transition-colors"><i data-lucide="book-open" class="w-4 h-4"></i></span>
+                    <span class="truncate">Attendance requirement</span>
+                </button>
+                <button onclick="askQuestion('What is the tuition fee?')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-sm text-slate-300 hover:text-white bg-white/[0.01] hover:bg-white/[0.04] border border-transparent hover:border-white/[0.06] transition-all flex items-center gap-3 group">
+                    <span class="p-1.5 rounded-md bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20 transition-colors"><i data-lucide="credit-card" class="w-4 h-4"></i></span>
+                    <span class="truncate">Fee details</span>
+                </button>
+                <button onclick="askQuestion('What are the library rules?')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-sm text-slate-300 hover:text-white bg-white/[0.01] hover:bg-white/[0.04] border border-transparent hover:border-white/[0.06] transition-all flex items-center gap-3 group">
+                    <span class="p-1.5 rounded-md bg-amber-500/10 text-amber-400 group-hover:bg-amber-500/20 transition-colors"><i data-lucide="library" class="w-4 h-4"></i></span>
+                    <span class="truncate">Library rules</span>
+                </button>
+                <button onclick="askQuestion('What is the mid semester examination notice?')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-sm text-slate-300 hover:text-white bg-white/[0.01] hover:bg-white/[0.04] border border-transparent hover:border-white/[0.06] transition-all flex items-center gap-3 group">
+                    <span class="p-1.5 rounded-md bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20 transition-colors"><i data-lucide="file-text" class="w-4 h-4"></i></span>
+                    <span class="truncate">Exam notices</span>
+                </button>
+                <button onclick="askQuestion('What scholarship information is available?')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-sm text-slate-300 hover:text-white bg-white/[0.01] hover:bg-white/[0.04] border border-transparent hover:border-white/[0.06] transition-all flex items-center gap-3 group">
+                    <span class="p-1.5 rounded-md bg-purple-500/10 text-purple-400 group-hover:bg-purple-500/20 transition-colors"><i data-lucide="award" class="w-4 h-4"></i></span>
+                    <span class="truncate">Scholarships</span>
+                </button>
+            </div>
+
+            <!-- Sidebar Footer Info -->
+            <div class="mt-auto pt-4 border-t border-white/[0.06] text-xs text-slate-500 flex items-center justify-between">
+                <span>Database Synced</span>
+                <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+            </div>
+        </aside>
+
+        <!-- Chat Workspace Main Section -->
+        <main class="flex-1 flex flex-col p-6 lg:p-8 max-w-5xl mx-auto w-full relative">
+            
+            <!-- Messages Container -->
+            <div id="chatBox" class="flex-1 overflow-y-auto space-y-6 pr-2 mb-4 min-h-[450px] max-h-[calc(100vh-260px)]">
+                <!-- Welcome Bot Message -->
+                <div class="flex items-start gap-4 animate-fade-in">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center shrink-0 text-indigo-400 mt-1 shadow-md">
+                        <i data-lucide="bot" class="w-5 h-5"></i>
+                    </div>
+                    <div class="bg-[#12131c]/80 border border-white/[0.06] p-4 rounded-2xl rounded-tl-sm text-slate-200 text-[15px] leading-relaxed shadow-xl max-w-2xl backdrop-blur-sm">
+                        <p class="font-medium text-white mb-1">Student AI Assistant</p>
+                        Hello! I am your connected student intelligence assistant. Ask me anything regarding attendance, schedules, fees, or university notices.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Command Bar Input Form -->
+            <form id="chatForm" class="relative mt-auto">
+                <div class="relative flex items-center bg-[#111218]/90 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-2 shadow-2xl focus-within:border-indigo-500/50 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all">
+                    <div class="pl-3 text-slate-500">
+                        <i data-lucide="message-square-plus" class="w-5 h-5"></i>
+                    </div>
+                    <input type="text" id="messageInput" placeholder="Ask anything about academics, fees, exams..." class="flex-1 bg-transparent border-none outline-none px-4 text-slate-100 placeholder-slate-500 text-sm lg:text-base py-2.5" autocomplete="off">
+                    <button type="submit" id="sendButton" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium text-sm shadow-lg shadow-indigo-600/20 hover:opacity-95 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-wait">
+                        <span>Send</span>
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- About & Contact Sections -->
+    <section id="about" class="py-20 bg-[#08090f] border-t border-white/[0.05] text-center px-6">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-2xl font-bold mb-4 tracking-tight">Intelligence at Your Fingertips</h2>
+            <p class="text-slate-400 leading-relaxed text-sm lg:text-base">
+                Answers are securely queried and synthesized in real time directly from the connected student database via FastAPI backend endpoints.
+            </p>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 bg-[#06070a] border-t border-white/[0.05] text-center px-6">
+        <h2 class="text-2xl font-bold mb-8 tracking-tight">Campus Location</h2>
+        <div class="flex justify-center">
+            <div class="bg-[#111218]/60 border border-white/[0.06] p-6 rounded-2xl max-w-sm w-full hover:border-indigo-500/30 transition-all group">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <i data-lucide="map-pin" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-semibold text-white mb-2">UIET Chandigarh</h3>
+                <a href="https://www.google.com/maps/place/UIET+Punjab+University/@30.7480817,76.7545404,600m/data=!3m2!1e3!4b1!4m6!3m5!1s0x390febffe47a7419:0x267dc179dae933b6!8m2!3d30.7480771!4d76.7571153" target="_blank" class="text-indigo-400 text-sm hover:underline inline-flex items-center gap-1">
+                    <span>View on Google Maps</span>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#050608] py-8 border-t border-white/[0.05] text-center text-xs text-slate-500">
+        <p>© 2026 Student AI Dashboard • Powered by FastAPI & Tailwind CSS</p>
+    </footer>
+
+    <!-- JavaScript Logic & Lucide Icons Initialization -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        document.getElementById("chatForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            sendMessage();
+        });
+
+        function askQuestion(question) {
+            const input = document.getElementById("messageInput");
+            input.value = question;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById("messageInput");
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatBox = document.getElementById("chatBox");
+            const sendButton = document.getElementById("sendButton");
+
+            // Append User Message with modern bubble layout
+            const userBubbleWrapper = document.createElement("div");
+            userBubbleWrapper.className = "flex items-start gap-4 justify-end animate-fade-in";
+            userBubbleWrapper.innerHTML = `
+                <div class="bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-4 rounded-2xl rounded-tr-sm text-[15px] leading-relaxed shadow-lg shadow-indigo-600/20 max-w-2xl">
+                    ${escapeHtml(message)}
+                </div>
+                <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0 text-slate-300 mt-1 shadow-md">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                </div>
+            `;
+            chatBox.appendChild(userBubbleWrapper);
+
+            // Append Thinking Bot Message
+            const botBubbleWrapper = document.createElement("div");
+            botBubbleWrapper.className = "flex items-start gap-4 animate-fade-in";
+            botBubbleWrapper.innerHTML = `
+                <div class="w-9 h-9 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center shrink-0 text-indigo-400 mt-1 shadow-md">
+                    <i data-lucide="bot" class="w-5 h-5"></i>
+                </div>
+                <div class="bot-response-content bg-[#12131c]/80 border border-white/[0.06] p-4 rounded-2xl rounded-tl-sm text-slate-300 text-[15px] leading-relaxed shadow-xl max-w-2xl backdrop-blur-sm flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-indigo-400 animate-bounce"></span>
+                    <span class="w-2 h-2 rounded-full bg-purple-400 animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-2 h-2 rounded-full bg-pink-400 animate-bounce [animation-delay:0.4s]"></span>
+                    <span class="ml-2 text-slate-400 text-sm font-medium">Analyzing database records...</span>
+                </div>
+            `;
+            chatBox.appendChild(botBubbleWrapper);
+            
+            lucide.createIcons();
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            input.value = "";
+            input.disabled = true;
+            sendButton.disabled = true;
+
+            try {
+                const response = await fetch("/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ question: message })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || data.error || "Request failed");
+                }
+
+                const responseText = data.answer || "No response from the assistant.";
+                const contentDiv = botBubbleWrapper.querySelector(".bot-response-content");
+                contentDiv.innerHTML = `<p class="font-medium text-white mb-1">Student AI Assistant</p>` + formatMessageText(responseText);
+            } catch (error) {
+                const contentDiv = botBubbleWrapper.querySelector(".bot-response-content");
+                contentDiv.innerHTML = `<p class="font-medium text-rose-400 mb-1">Connection Error</p>${escapeHtml(error.message || "Unable to reach the AI server. Start the FastAPI backend and try again.")}`;
+            } finally {
+                input.disabled = false;
+                sendButton.disabled = false;
+                input.focus();
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        function newChat() {
+            const chatBox = document.getElementById("chatBox");
+            chatBox.innerHTML = `
+                <div class="flex items-start gap-4 animate-fade-in">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center shrink-0 text-indigo-400 mt-1 shadow-md">
+                        <i data-lucide="bot" class="w-5 h-5"></i>
+                    </div>
+                    <div class="bg-[#12131c]/80 border border-white/[0.06] p-4 rounded-2xl rounded-tl-sm text-slate-200 text-[15px] leading-relaxed shadow-xl max-w-2xl backdrop-blur-sm">
+                        <p class="font-medium text-white mb-1">Student AI Assistant</p>
+                        New conversation started. How can I assist you today?
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+            document.getElementById("messageInput").focus();
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        function formatMessageText(text) {
+            // Basic line break formatting
+            return escapeHtml(text).replace(/\n/g, '<br>');
+        }
+    </script>
+</body>
+</html>
